@@ -1,0 +1,39 @@
+/* ============================================================
+   ФУДКОСТ — только foodcost.html
+   ============================================================ */
+
+.tip{
+  position:absolute;pointer-events:none;opacity:0;transition:opacity .12s;
+  background:#0A0E18;border:1px solid #2B3554;border-radius:10px;
+  padding:7px 11px;font-size:.74rem;font-weight:700;white-space:nowrap;
+  transform:translate(-50%,-120%);z-index:5;box-shadow:0 8px 24px rgba(0,0,0,.5);
+}
+.tip small{display:block;color:var(--mut);font-weight:500;font-size:.66rem}
+.r-table .num{text-align:right;font-weight:700}
+/* ===== страница фудкоста ===== */
+.fc-tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:18px}
+.fc-tile{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:18px 20px;position:relative;overflow:hidden}
+.fc-tile::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px}
+.fc-tile.k::before{background:var(--grn)}
+.fc-tile.b::before{background:var(--vio)}
+.fc-tile .ft-name{font-size:.82rem;font-weight:700;color:var(--mut)}
+.fc-tile .ft-val{font-size:2rem;font-weight:800;letter-spacing:-.02em;margin:8px 0 2px}
+.fc-tile .ft-goal{font-size:.74rem;color:var(--mut)}
+.fc-tile .ft-goal b{font-weight:700}
+.fc-tile .ft-track{height:7px;border-radius:99px;background:#1B2236;position:relative;margin-top:13px;overflow:visible}
+.fc-tile .ft-fill{display:block;height:100%;border-radius:99px}
+.fc-tile.k .ft-fill{background:linear-gradient(90deg,var(--grn2),var(--grn))}
+.fc-tile.b .ft-fill{background:linear-gradient(90deg,#4B49C9,var(--vio2))}
+.fc-tile .ft-mark{position:absolute;top:-3px;bottom:-3px;width:2px;background:#E9EDF6;opacity:.65;border-radius:2px}
+.fc-table{width:100%;border-collapse:collapse}
+.fc-table th{text-align:left;font-size:.68rem;text-transform:uppercase;letter-spacing:.05em;color:var(--mut);font-weight:600;padding:9px 10px;border-bottom:1px solid var(--line)}
+.fc-table th.num,.fc-table td.num{text-align:right}
+.fc-table td{padding:11px 10px;border-bottom:1px solid #161D30;font-size:.85rem}
+.fc-table tr:last-child td{border-bottom:0}
+.fc-table .dish-cat{font-size:.7rem;color:var(--mut2)}
+.fc-table .fc-hi{color:var(--red);font-weight:800}
+.fc-table .fc-ok{color:var(--grn);font-weight:700}
+.fc-table .mono{font-family:var(--mono,monospace);font-weight:600}
+.tag-unit{font-size:.66rem;font-weight:700;border-radius:99px;padding:2px 9px}
+.tag-unit.k{background:rgba(61,220,151,.12);color:var(--grn)}
+.tag-unit.b{background:rgba(110,107,255,.14);color:#9D9BFF}
