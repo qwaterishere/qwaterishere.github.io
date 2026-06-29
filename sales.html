@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Сезоны — продажи</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="app/base.css">
+<link rel="stylesheet" href="app/sales.css">
+</head>
+<body>
+<div class="app">
+
+  <aside class="side">
+    <div class="logo">СЕЗОНЫ<span>.</span></div>
+    <nav class="nav">
+      <a href="index.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>Дашборд</a>
+      <a href="sales.html" class="on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 14l4-4 3 3 5-6"/></svg>Продажи</a>
+      <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-5 9 5v10a1 1 0 01-1 1H4a1 1 0 01-1-1V9z"/><path d="M9 21v-9h6v9"/></svg>Склад</a>
+      <a href="foodcost.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>Фудкост<span class="badge">3</span></a>
+      <div class="nav-sep"></div>
+      <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a7.7 7.7 0 000-6m-2.4-3.4a7.7 7.7 0 00-6 0M4.6 9a7.7 7.7 0 000 6m2.4 3.4a7.7 7.7 0 006 0"/></svg>Настройки</a>
+      <a href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.6 2.6 0 015 .8c0 1.7-2.5 2.2-2.5 3.7"/><circle cx="12" cy="17" r=".5" fill="currentColor"/></svg>Поддержка</a>
+    </nav>
+    <div class="side-bottom"><span class="mode"><span class="sun"></span> Тёмная тема</span></div>
+  </aside>
+
+  <main class="main page-sales">
+<div class="period-bar">
+  <div class="seg">
+    <button>Неделя</button>
+    <button class="on">Месяц</button>
+    <button>Год</button>
+  </div>
+  <div class="date-pill">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
+    Июнь 2026 <span class="dp-note">1–11 · закрытые дни</span>
+  </div>
+</div>
+
+<!-- ===== структура продаж: донат (категории) / бары (подкатегории) ===== -->
+<div class="block">
+  <div class="block-head">
+    <h2>Структура продаж</h2>
+    <div class="seg" id="levelSeg">
+      <button class="on" data-level="cat">Категории</button>
+      <button data-level="sub">Подкатегории</button>
+    </div>
+  </div>
+
+  <!-- донат для категорий -->
+  <div class="donut-wrap" id="donutWrap">
+    <div class="donut-side">
+      <svg id="donut" viewBox="0 0 220 220" aria-label="структура продаж"></svg>
+      <div class="donut-center" id="donutCenter"></div>
+    </div>
+    <div class="legend-side" id="legend"></div>
+  </div>
+
+  <!-- бары для подкатегорий -->
+  <div class="bars-block" id="barsBlock" style="display:none">
+    <div class="bars-legend">
+      <span><i class="sw rev"></i>Выручка</span>
+      <span><i class="sw gp"></i>Валовая прибыль</span>
+    </div>
+    <div class="bars" id="bars"></div>
+  </div>
+</div>
+
+<!-- ===== таблица позиций + ABC ===== -->
+<div class="block">
+  <div class="block-head">
+    <h2>Позиции · ABC-анализ</h2>
+    <div class="pos-controls">
+      <div class="abc-axis">
+        Ось ABC:
+        <div class="seg" id="abcAxis">
+          <button class="on" data-axis="gp">Вал. прибыль</button>
+          <button data-axis="rev">Выручка</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="abc-summary" id="abcSummary"></div>
+
+  <table class="pos-table">
+    <thead>
+      <tr id="posHead">
+        <th data-k="name">Позиция</th>
+        <th data-k="abc">ABC <span class="arr">▾</span></th>
+        <th data-k="qty" class="num">Кол-во <span class="arr">▾</span></th>
+        <th data-k="rev" class="num">Выручка <span class="arr">▾</span></th>
+        <th data-k="gp" class="num sorted">Вал. прибыль <span class="arr">▾</span></th>
+        <th data-k="fc" class="num">Фудкост <span class="arr">▾</span></th>
+      </tr>
+    </thead>
+    <tbody id="posBody"></tbody>
+  </table>
+</div>
+  </main>
+</div>
+
+<script>
+/* ===== данные позиций (выручка, себестоимость согласованы) ===== */
+const RAW=[
+  // [имя, подкатегория, категория(k/b/w), кол-во, цена, себестоимость_ед]
+  ['Стейк рибай','Горячее','k',182,2390,990],
+  ['Паста карбонара','Горячее','k',410,720,230],
+  ['Том ям','Супы','k',256,790,198],
+  ['Цезарь с курицей','Салаты','k',388,650,175],
+  ['Боул с лососем','Салаты','k',214,840,336],
+  ['Брускетта','Закуски','k',342,450,108],
+  ['Тартар','Закуски','k',128,890,312],
+  ['Картофель фри','Гарниры','k',520,320,58],
+  ['Чизкейк','Десерты','k',298,490,118],
+  ['Тирамису','Десерты','k',176,520,182],
+  ['Дорадо','Горячее','k',94,1450,610],
+  ['Устрицы','Закуски','k',88,1200,540],
+  ['Капучино','Кофе','b',640,280,48],
+  ['Эспрессо','Кофе','b',410,180,25],
+  ['Лимонад','Безалкогольное','b',356,350,52],
+  ['Негрони','Коктейли','b',210,650,140],
+  ['Апероль','Коктейли','b',188,590,155],
+  ['Виски','Крепкий','b',96,720,210],
+  ['Вино бокал Кьянти','Вино бокал','w',204,620,205],
+  ['Вино бокал Просекко','Вино бокал','w',176,550,165],
+  ['Бордо бутылка','Вино бутылка','w',38,4200,1680],
+  ['Шабли бутылка','Вино бутылка','w',31,3800,1560]
+].map(r=>{
+  const [name,sub,cat,qty,price,unitCost]=r;
+  const rev=qty*price, cost=qty*unitCost, gp=rev-cost, fc=cost/rev*100;
+  return {name,sub,cat,qty,rev,cost,gp,fc};
+});
+
+const CATNAME={k:'Кухня',b:'Бар',w:'Вино'};
+const fmt=n=>Math.round(n).toLocaleString('ru-RU');
+const money=n=>fmt(n)+' ₽';
+const k=n=>Math.round(n/1000).toLocaleString('ru-RU')+'к';
+const pct=n=>n.toFixed(1).replace('.',',')+' %';
+
+/* ===== агрегация ===== */
+function aggBy(key){
+  const m={};
+  RAW.forEach(p=>{const g=p[key];(m[g]=m[g]||{rev:0,gp:0,cost:0,qty:0});m[g].rev+=p.rev;m[g].gp+=p.gp;m[g].cost+=p.cost;m[g].qty+=p.qty;});
+  return m;
+}
+
+/* ===== бар-чарт продаж ===== */
+const CATCOLOR={k:'#3DDC97', b:'#6E6BFF', w:'#C7466F'};
+let level='cat';
+
+/* ===== донат (категории) ===== */
+function describeArc(cx,cy,r,a0,a1){
+  const p=a=>{const x=(a-90)*Math.PI/180;return[cx+r*Math.cos(x),cy+r*Math.sin(x)];};
+  const [x1,y1]=p(a0),[x2,y2]=p(a1);
+  const large=a1-a0>180?1:0;
+  return `M${x1.toFixed(2)} ${y1.toFixed(2)} A${r} ${r} 0 ${large} 1 ${x2.toFixed(2)} ${y2.toFixed(2)}`;
+}
+function shade(hex,amt){
+  let n=parseInt(hex.slice(1),16);
+  let r=Math.max(0,Math.min(255,(n>>16)+amt)),g=Math.max(0,Math.min(255,((n>>8)&0xff)+amt)),b=Math.max(0,Math.min(255,(n&0xff)+amt));
+  return '#'+((r<<16)|(g<<8)|b).toString(16).padStart(6,'0');
+}
+function renderDonut(){
+  const m=aggBy('cat');
+  const data=['k','b','w'].filter(c=>m[c]).map(c=>({key:c,name:CATNAME[c],color:CATCOLOR[c],rev:m[c].rev,gp:m[c].gp}));
+  const total=data.reduce((s,d)=>s+d.rev,0), totalGp=data.reduce((s,d)=>s+d.gp,0);
+  const cx=110,cy=110,r=82,sw=30;
+  let ang=0,paths='',defs='';
+  data.forEach((d,i)=>{
+    const sweep=d.rev/total*360, start=ang, end=ang+sweep-(data.length>1?1.2:0); ang+=sweep;
+    defs+=`<linearGradient id="g${i}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${d.color}"/><stop offset="1" stop-color="${shade(d.color,-30)}"/></linearGradient>`;
+    paths+=`<path class="donut-seg" data-key="${d.key}" d="${describeArc(cx,cy,r,start,end)}" fill="none" stroke="url(#g${i})" stroke-width="${sw}"/>`;
+  });
+  document.getElementById('donut').innerHTML=`<defs>${defs}<radialGradient id="innerShade" cx="0.5" cy="0.5" r="0.5"><stop offset="0.60" stop-color="#000" stop-opacity="0"/><stop offset="0.70" stop-color="#000" stop-opacity="0.4"/><stop offset="0.73" stop-color="#000" stop-opacity="0"/></radialGradient></defs>${paths}<circle cx="110" cy="110" r="82" fill="none" stroke="url(#innerShade)" stroke-width="30" pointer-events="none"/>`;
+  document.getElementById('donutCenter').innerHTML=`<div class="dc-label">Выручка</div><div class="dc-val">${money(total)}</div><div class="dc-sub">прибыль ${money(totalGp)}</div>`;
+  document.getElementById('legend').innerHTML=
+    `<div class="lg-head"><span>Выручка</span><span>Вал. прибыль</span></div>`+
+    data.map(d=>`<div class="lg-row" data-key="${d.key}">
+      <span class="lg-dot" style="background:${d.color}"></span>
+      <span class="lg-name">${d.name}<small>${(d.rev/total*100).toFixed(0)} % от выручки</small></span>
+      <span class="lg-vals"><b class="lg-r">${money(d.rev)}</b><b class="lg-g">${money(d.gp)}</b></span>
+    </div>`).join('');
+}
+function bindDonutHover(){
+  const hl=key=>document.querySelectorAll('.donut-seg').forEach(s=>s.classList.toggle('dim',key&&s.dataset.key!==key));
+  const lg=document.getElementById('legend'),dn=document.getElementById('donut');
+  lg.addEventListener('mouseover',e=>{const r=e.target.closest('.lg-row');hl(r?r.dataset.key:null);});
+  lg.addEventListener('mouseleave',()=>hl(null));
+  dn.addEventListener('mouseover',e=>{const s=e.target.closest('.donut-seg');hl(s?s.dataset.key:null);});
+  dn.addEventListener('mouseleave',()=>hl(null));
+}
+
+function barData(){
+  // вернуть {k:[{name,rev,gp}], b:[...], w:[...]}
+  const groups={k:[],b:[],w:[]};
+  if(level==='cat'){
+    const m=aggBy('cat');
+    ['k','b','w'].forEach(c=>{if(m[c])groups[c].push({name:CATNAME[c],rev:m[c].rev,gp:m[c].gp});});
+  } else {
+    const m={};
+    RAW.forEach(p=>{const key=p.cat+'|'+p.sub;(m[key]=m[key]||{cat:p.cat,sub:p.sub,rev:0,gp:0});m[key].rev+=p.rev;m[key].gp+=p.gp;});
+    Object.values(m).forEach(x=>groups[x.cat].push({name:x.sub,rev:x.rev,gp:x.gp}));
+    ['k','b','w'].forEach(c=>groups[c].sort((a,b)=>b.rev-a.rev));
+  }
+  return groups;
+}
+
+function renderBars(){
+  const g=barData();
+  const all=[...g.k,...g.b,...g.w];
+  const maxRev=Math.max(...all.map(x=>x.rev));
+  const totalRev=all.reduce((s,x)=>s+x.rev,0);
+  let html='';
+  ['k','b','w'].forEach(c=>{
+    if(!g[c].length)return;
+    html+=`<div class="bar-group"><div class="bg-title" style="--cc:${CATCOLOR[c]}">${CATNAME[c]}</div>`;
+    g[c].forEach(x=>{
+      const revW=x.rev/maxRev*100, gpW=x.gp/maxRev*100;
+      const share=(x.rev/totalRev*100).toFixed(1).replace('.',',');
+      html+=`<div class="bar-row">
+        <span class="br-name">${x.name}</span>
+        <span class="br-track"><i class="br-rev" style="width:${revW.toFixed(1)}%"></i><i class="br-gp" style="width:${gpW.toFixed(1)}%"></i></span>
+        <span class="br-vals"><b class="br-r">${money(x.rev)}</b><b class="br-g">${money(x.gp)}</b><small>${share} % от выручки</small></span>
+      </div>`;
+    });
+    html+=`</div>`;
+  });
+  document.getElementById('bars').innerHTML=html;
+}
+
+
+/* ===== ABC ===== */
+let abcAxis='gp', sortKey='gp', sortDesc=true, abcFilter={A:1,B:1,C:1};
+function computeABC(){
+  const sorted=[...RAW].sort((a,b)=>b[abcAxis]-a[abcAxis]);
+  const total=sorted.reduce((s,p)=>s+p[abcAxis],0);
+  let cum=0;
+  sorted.forEach(p=>{cum+=p[abcAxis];const share=cum/total;p.abc=share<=0.8?'A':share<=0.95?'B':'C';});
+}
+function renderSummary(){
+  const g={A:{n:0,v:0},B:{n:0,v:0},C:{n:0,v:0}};
+  const total=RAW.reduce((s,p)=>s+p[abcAxis],0);
+  RAW.forEach(p=>{g[p.abc].n++;g[p.abc].v+=p[abcAxis];});
+  const lbl=abcAxis==='gp'?'прибыли':'выручки';
+  document.getElementById('abcSummary').innerHTML=['A','B','C'].map(L=>
+    `<div class="abc-pill ${L} ${abcFilter[L]?'':'off'}" data-g="${L}">
+      <span class="dot"></span><b>${L}</b>
+      <span class="meta">${g[L].n} поз · ${(g[L].v/total*100).toFixed(0)} % ${lbl}</span>
+    </div>`).join('');
+}
+function renderTable(){
+  let list=RAW.filter(p=>abcFilter[p.abc]);
+  list.sort((a,b)=>{
+    let r;
+    if(sortKey==='name')r=a.name.localeCompare(b.name);
+    else if(sortKey==='abc')r=('ABC'.indexOf(a.abc))-('ABC'.indexOf(b.abc));
+    else r=a[sortKey]-b[sortKey];
+    return sortDesc?-r:r;
+  });
+  document.getElementById('posBody').innerHTML=list.map(p=>{
+    const fcCls=p.fc<28?'lo':p.fc>33?'hi':'';
+    return `<tr>
+      <td class="pos-name">${p.name}<small>${p.sub} · ${CATNAME[p.cat]}</small></td>
+      <td><span class="abc-tag ${p.abc}">${p.abc}</span></td>
+      <td>${fmt(p.qty)}</td>
+      <td>${money(p.rev)}</td>
+      <td class="gp-cell">${money(p.gp)}</td>
+      <td class="fc-cell ${fcCls}">${pct(p.fc)}</td>
+    </tr>`;
+  }).join('');
+  document.querySelectorAll('#posHead th').forEach(th=>{
+    th.classList.toggle('sorted',th.dataset.k===sortKey);
+    const arr=th.querySelector('.arr');if(arr)arr.textContent=sortDesc?'▾':'▴';
+  });
+}
+function refreshABC(){computeABC();renderSummary();renderTable();}
+
+/* события */
+document.getElementById('abcAxis').addEventListener('click',e=>{
+  const b=e.target.closest('button');if(!b)return;
+  document.querySelectorAll('#abcAxis button').forEach(x=>x.classList.toggle('on',x===b));
+  abcAxis=b.dataset.axis; refreshABC();
+});
+document.getElementById('posHead').addEventListener('click',e=>{
+  const th=e.target.closest('th');if(!th)return;
+  const k=th.dataset.k;
+  if(sortKey===k)sortDesc=!sortDesc; else{sortKey=k;sortDesc=(k!=='name');}
+  renderTable();
+});
+document.getElementById('abcSummary').addEventListener('click',e=>{
+  const p=e.target.closest('.abc-pill');if(!p)return;
+  const L=p.dataset.g; abcFilter[L]=!abcFilter[L];
+  // не дать выключить все
+  if(!Object.values(abcFilter).some(v=>v))abcFilter[L]=true;
+  renderSummary();renderTable();
+});
+
+function renderStructure(){
+  const isCat=level==='cat';
+  document.getElementById('donutWrap').style.display=isCat?'':'none';
+  document.getElementById('barsBlock').style.display=isCat?'none':'';
+  if(isCat)renderDonut(); else renderBars();
+}
+document.getElementById('levelSeg').addEventListener('click',e=>{
+  const b=e.target.closest('button');if(!b)return;
+  document.querySelectorAll('#levelSeg button').forEach(x=>x.classList.toggle('on',x===b));
+  level=b.dataset.level; renderStructure();
+});
+
+renderStructure();bindDonutHover();refreshABC();
+</script>
+</body>
+</html>
