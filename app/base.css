@@ -175,3 +175,6 @@ button{font-family:inherit;cursor:pointer}
 .fc-tile .ft-goal b.dn{color:var(--red)}
 .fc-tile.w .ft-fill{background:linear-gradient(90deg,#8A2D52,#C7466F)}
 .tag-unit.w{background:rgba(199,70,111,.14);color:#E27396}
+.cmp-pill{display:flex;align-items:center;gap:7px;background:rgba(110,107,255,.12);border:1px solid rgba(110,107,255,.4);border-radius:11px;padding:7px 14px;font-size:.76rem;font-weight:600;color:#A5A3FF}
+.cmp-pill b{color:#C9C8FF}
+.cmp-pill .x{margin-left:4px;opacity:.6;cursor:pointer}

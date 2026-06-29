@@ -2,9 +2,6 @@
    ДАШБОРД — только index.html
    ============================================================ */
 
-.cmp-pill{display:flex;align-items:center;gap:7px;background:rgba(110,107,255,.12);border:1px solid rgba(110,107,255,.4);border-radius:11px;padding:7px 14px;font-size:.76rem;font-weight:600;color:#A5A3FF}
-.cmp-pill b{color:#C9C8FF}
-.cmp-pill .x{margin-left:4px;opacity:.6;cursor:pointer}
 /* KPI */
 .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:16px}
 .kpi{
