@@ -108,7 +108,7 @@
 <body>
   <header>
     <div class="brand">СЕЗОНЫ<span>.</span></div>
-    <div class="stamp mono"><span class="reticle"></span> TRG-001 · ЛЕСНОЙ ТАШКЕНТ</div>
+    <div class="stamp mono"><span class="reticle"></span> TRG-001 · ВЕРАНДА · ЯРОСЛАВЛЬ</div>
   </header>
   <div class="barcode"></div>
 
@@ -128,9 +128,9 @@
       <div class="card-head"><h3>Выручка — план по дням</h3><span class="mono">[01]</span></div>
       <div class="sub">сумма месяца распределяется профилем дней недели; дневные планы уезжают в plan графика на дашборде</div>
       <div class="row">
-        <label>План на месяц, сум</label>
-        <span class="fact">факт июля (1–12): 431,9 млн · темп ≈ 1,08 млрд</span>
-        <input type="text" id="rev" value="1 100 000 000" oninput="recalc()">
+        <label>План на месяц, ₽</label>
+        <span class="fact">факт июня (1–12): 4,6 млн · темп ≈ 11,9 млн</span>
+        <input type="text" id="rev" value="12 000 000" oninput="recalc()">
         <span class="derived" id="revDay"></span>
       </div>
       <div class="row" style="align-items:flex-start">
@@ -145,13 +145,13 @@
       <div class="sub">цель на странице «Фудкост» (totals и юниты)</div>
       <div class="row">
         <label>Кухня, %</label>
-        <span class="fact">факт июля: 31,8%</span>
+        <span class="fact">факт июня: 30,2%</span>
         <input type="text" id="fck" value="30" oninput="recalc()">
         <span class="derived" id="fckSum"></span>
       </div>
       <div class="row">
         <label>Бар, %</label>
-        <span class="fact">факт июля: 30,1%</span>
+        <span class="fact">факт июня: 24,7%</span>
         <input type="text" id="fcb" value="27" oninput="recalc()">
         <span class="derived" id="fcbSum"></span>
       </div>
@@ -162,13 +162,13 @@
       <div class="sub">акты списания (порча, бой, срок) — фаза 2 фудкоста</div>
       <div class="row">
         <label>Кухня</label>
-        <div class="unit-toggle"><button class="on">%</button><button>сум</button></div>
+        <div class="unit-toggle"><button class="on">%</button><button>₽</button></div>
         <input type="text" id="wok" value="1,0" oninput="recalc()">
         <span class="derived" id="wokSum"></span>
       </div>
       <div class="row">
         <label>Бар</label>
-        <div class="unit-toggle"><button class="on">%</button><button>сум</button></div>
+        <div class="unit-toggle"><button class="on">%</button><button>₽</button></div>
         <input type="text" id="wob" value="0,5" oninput="recalc()">
         <span class="derived" id="wobSum"></span>
       </div>
@@ -179,7 +179,7 @@
       <div class="sub">блок losses страницы «Фудкост», по себестоимости</div>
       <div class="row">
         <label>План, % от выручки</label>
-        <span class="fact">факт июля: 0,52% (2,26 млн)</span>
+        <span class="fact">факт июня: 0,4% (46 тыс.)</span>
         <input type="text" id="compl" value="0,6" oninput="recalc()">
         <span class="derived" id="complSum"></span>
       </div>
@@ -218,8 +218,8 @@
   const DEFAULT_W = [1.0, 1.0, 1.0, 1.1, 1.3, 1.4, 1.2];
   const YEAR = 2026, MONTH = 7;               // август 2026
   const num = s => parseFloat(String(s).replace(/\s/g, '').replace(',', '.')) || 0;
-  const fmtM = n => n >= 1e9 ? (n / 1e9).toFixed(2).replace('.', ',') + ' млрд'
-                             : (n / 1e6).toFixed(1).replace('.', ',') + ' млн';
+  const fmtM = n => n >= 1e6 ? (n / 1e6).toFixed(1).replace('.', ',') + ' млн'
+                             : (n / 1e3).toFixed(0) + ' тыс. ₽';
 
   const weightsBox = document.getElementById('weights');
   WD.forEach((d, i) => {
@@ -248,7 +248,7 @@
       sum += plan;
       cal.insertAdjacentHTML('beforeend',
         `<div class="day${wd[d - 1] >= 5 ? ' we' : ''}"><div class="n">${String(d).padStart(2, '0')}</div>
-         <div class="v">${(plan / 1e6).toFixed(1).replace('.', ',')}М</div></div>`);
+         <div class="v">${Math.round(plan / 1e3)}К</div></div>`);
     }
     document.getElementById('revDay').textContent = '≈ ' + fmtM(rev / days) + '/день в среднем';
     document.getElementById('ctl').textContent =
