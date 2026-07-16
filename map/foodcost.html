@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Сезоны — карта данных · Фудкост</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Onest:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="crumbs"><a href="index.html">СЕЗОНЫ · КАРТА</a> / ФУДКОСТ</div>
+  <header>
+    <div>
+      <h1>Фудкост — путь каждого элемента</h1>
+      <div class="sub">Как каждый блок страницы «Фудкост» получает данные: строка БД →
+        функция-сборщик → схема → HTTP → фронт-мапер → пиксель. Числа обезличены
+        (заведение «Веранда», ₽).</div>
+    </div>
+    <div class="right">
+      <span class="badge">/foodcost</span>
+      <button class="ghost" onclick="tg()">◐ тёмная</button>
+    </div>
+  </header>
+
+  <div class="insight">
+    <h3>Общий принцип: <span class="accent">бэкенд — факты, фронт — представление</span></h3>
+    <p>Сервис <code>build_food_cost()</code> отдаёт по каждому разрезу <b>три сырых факта</b>
+    (<code>revenue</code>, <code>cost</code>, <code>revenueWithCost</code>). Проценты фудкоста,
+    доли, LfL и подписи считает фронт в <code>foodcost.mapper.ts</code>. Ниже — каждый элемент
+    страницы отдельно; зелёное = бэкенд (Python), фиолетовое = фронт (Angular, зона коллеги).</p>
+  </div>
+
+  <!-- 1. Чистый фудкост -->
+  <div class="elt" id="clean">
+    <div class="eh"><h3>1 · Чистый фудкост</h3><span class="pixel">«31,7 %»</span></div>
+    <div class="edesc">Главная карточка. Процент нигде не хранится — фронт делит две суммы бэка.</div>
+    <div class="zonelabel"><span class="zt b">БЭКЕНД</span></div>
+    <div class="flow">
+      <div class="node be"><div class="nk">БД</div><div class="nf">dish_sales ⋈ orders</div><div class="nv">cost, paid_sum</div></div>
+      <div class="sep">→</div>
+      <div class="node be"><div class="nk">СЕРВИС · ЗАПРОС</div><div class="nf">_cost_rows() _sum_columns()</div><div class="nv">SUM(cost) / SUM(paid) при cost&gt;0</div></div>
+      <div class="sep">→</div>
+      <div class="node be"><div class="nk">СЕРВИС · СБОРКА</div><div class="nf">_fold() _facts()</div><div class="nv">cost=3 210 000<br>revenueWithCost=10 120 000</div></div>
+      <div class="sep">→</div>
+      <div class="node be"><div class="nk">СХЕМА</div><div class="nf">Foodcost · CostTotals</div><div class="nv">model_validate</div></div>
+    </div>
+    <div class="zonelabel" style="margin-top:8px"><span class="zt f">ФРОНТ</span></div>
+    <div class="flow">
+      <div class="node fe"><div class="nk">РЕПОЗИТОРИЙ</div><div class="nf">FoodcostRepository.fetch()</div><div class="nv">GET /api/foodcost</div></div>
+      <div class="sep">→</div>
+      <div class="node fe"><div class="nk">СТОР</div><div class="nf">FoodcostDataStore.rawData</div><div class="nv">FoodcostApi</div></div>
+      <div class="sep">→</div>
+      <div class="node fe"><div class="nk">МАПЕР · СЧИТАЕТ %</div><div class="nf">buildOverviewClean → fcPct()</div><div class="nv">3 210 000/10 120 000×100=31,7</div></div>
+      <div class="sep">→</div>
+      <div class="node fe"><div class="nk">КОМПОНЕНТ</div><div class="nf">FoodcostOverviewCard…</div><div class="nv">«31,7 %»</div></div>
+    </div>
+  </div>
+
+  <!-- 2. Юниты -->
+  <div class="elt" id="units">
+    <div class="eh"><h3>2 · Юниты (Кухня / Бар / Вино)</h3><span class="pixel">бары %</span></div>
+    <div class="edesc">Тот же расчёт, что у тоталов, но с разрезом по складу-направлению — GROUP BY top_group.</div>
+    <div class="flow">
+      <div class="node be"><div class="nk">СЕРВИС</div><div class="nf">_unit_cost_sums()</div><div class="nv">_cost_rows(+top_group) → resolve_unit</div></div>
+      <div class="sep">→</div>
+      <div class="node be"><div class="nk">СХЕМА</div><div class="nf">units: list[UnitCost]</div><div class="nv">4 ключа k/b/w/o</div></div>
+      <div class="httpsep">HTTP</div>
+      <div class="node fe"><div class="nk">МАПЕР</div><div class="nf">buildUnits() → fcPct()</div><div class="nv">% + shareOfSpend по юниту</div></div>
+      <div class="sep">→</div>
+      <div class="node fe"><div class="nk">КОМПОНЕНТ</div><div class="nf">FoodcostUnitsOrganism</div><div class="nv">Кухня 31,8% · Бар 26,9%</div></div>
+    </div>
+  </div>
+
+  <!-- 3. Категории -->
+  <div class="elt" id="categories">
+    <div class="eh"><h3>3 · Категории (группы)</h3><span class="pixel">вкладки</span></div>
+    <div class="edesc">Живой разрез по папкам номенклатуры — только группы с продажами в периоде.</div>
+    <div class="flow">
+      <div class="node be"><div class="nk">СЕРВИС</div><div class="nf">_group_cost_sums()</div><div class="nv">GROUP BY top_group, dish_group</div></div>
+      <div class="sep">→</div>
+      <div class="node be"><div class="nk">СХЕМА</div><div class="nf">groups: list[GroupCost]</div><div class="nv">{unit, group, факты}</div></div>
+      <div class="httpsep">HTTP</div>
+      <div class="node fe"><div class="nk">МАПЕР</div><div class="nf">buildCategories() → fcPct()</div><div class="nv">раскладка по k/b/w</div></div>
+      <div class="sep">→</div>
+      <div class="node fe"><div class="nk">КОМПОНЕНТ</div><div class="nf">FoodcostCategoriesOrganism</div><div class="nv">Горячее 33,1% · Салаты 30,8%</div></div>
+    </div>
+  </div>
+
+  <!-- 4. Скидки -->
+  <div class="elt" id="discounts">
+    <div class="eh"><h3>4 · Скидки</h3><span class="pixel">3 плашки</span></div>
+    <div class="edesc">Пять фактов → фронт считает фудкост скидочных позиций и влияние скидок на общий фудкост.</div>
+    <div class="flow">
+      <div class="node be"><div class="nk">СЕРВИС</div><div class="nf">_discount_sums()</div><div class="nv">5 сумм по строкам discount&gt;0</div></div>
+      <div class="sep">→</div>
+      <div class="node be"><div class="nk">СХЕМА</div><div class="nf">discounts: Discounts</div><div class="nv">discountSum, discounted*…</div></div>
+      <div class="httpsep">HTTP</div>
+      <div class="node fe"><div class="nk">МАПЕР</div><div class="nf">buildDiscounts()</div><div class="nv">discountedFc, impact п.п.</div></div>
+      <div class="sep">→</div>
+      <div class="node fe"><div class="nk">КОМПОНЕНТ</div><div class="nf">FoodcostDiscountsOrganism</div><div class="nv">«240 000 ₽ · 37,6% · +0,9 п.п.»</div></div>
+    </div>
+  </div>
+
+  <!-- 5. Потери -->
+  <div class="elt" id="losses">
+    <div class="eh"><h3>5 · Потери</h3><span class="pixel">строки</span></div>
+    <div class="edesc">Комплименты (paid=0, price&gt;0) и стафф. Списания — null до фазы 2 (домен writeoffs).</div>
+    <div class="flow">
+      <div class="node be"><div class="nk">СЕРВИС</div><div class="nf">_compliment_sums() _staff_sums()</div><div class="nv">cost, priceValue, qty</div></div>
+      <div class="sep">→</div>
+      <div class="node be"><div class="nk">СХЕМА</div><div class="nf">losses: Losses</div><div class="nv">compliments, staff, writeoffs=null</div></div>
+      <div class="httpsep">HTTP</div>
+      <div class="node fe"><div class="nk">МАПЕР</div><div class="nf">buildLosses()</div><div class="nv">строки + total</div></div>
+      <div class="sep">→</div>
+      <div class="node fe"><div class="nk">КОМПОНЕНТ</div><div class="nf">FoodcostLossesOrganism</div><div class="nv">Комплименты 46 000 · Стафф 12 000</div></div>
+    </div>
+  </div>
+
+  <div class="foot">← <a href="index.html" style="color:var(--fe)">к общей карте</a> · следующая страница детализируется по запросу</div>
+
+<script>
+  function tg(){const r=document.documentElement;const d=r.dataset.theme==='dark';
+    r.dataset.theme=d?'':'dark';document.querySelector('.ghost').textContent=d?'◐ тёмная':'◑ светлая';}
+</script>
+</body>
+</html>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Сезоны — карта данных</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Onest:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="crumbs">СЕЗОНЫ · КАРТА ДАННЫХ</div>
+  <header>
+    <div>
+      <h1>Как данные доходят до экрана</h1>
+      <div class="sub">Общая карта: 5 страниц, под каждой — элементы и цепочка функций
+        от базы до пикселя. Кликни элемент, где есть <span style="color:var(--fe)">ссылка</span> —
+        откроется детальный разбор. Числа в примерах обезличены.</div>
+    </div>
+    <div class="right">
+      <span class="badge">КАРТА</span>
+      <button class="ghost" onclick="tg()">◐ тёмная</button>
+    </div>
+  </header>
+
+  <!-- ФУДКОСТ -->
+  <div class="pagecard done">
+    <div class="ph"><h2>Фудкост</h2><span class="route">/foodcost</span>
+      <span class="st ok">ДЕТАЛЬНО ГОТОВО</span></div>
+    <div class="psub">build_food_cost() → Foodcost → GET /api/foodcost → FoodcostRepository → foodcost.mapper.ts</div>
+    <div class="el"><div class="en"><a class="lnk" href="foodcost.html#clean">Чистый фудкост ↗</a></div>
+      <div class="chain"><span class="be">_fold/_facts</span> <span class="ar">→</span> totals.cost, revenueWithCost <span class="ar">→</span> <span class="fe">buildOverviewClean·fcPct()</span> <span class="ar">→</span> «31,7 %»</div></div>
+    <div class="el"><div class="en"><a class="lnk" href="foodcost.html#units">Юниты (К/Б/В) ↗</a></div>
+      <div class="chain"><span class="be">_unit_cost_sums</span> <span class="ar">→</span> units[] <span class="ar">→</span> <span class="fe">buildUnits·fcPct()</span> <span class="ar">→</span> бары по юнитам</div></div>
+    <div class="el"><div class="en"><a class="lnk" href="foodcost.html#categories">Категории ↗</a></div>
+      <div class="chain"><span class="be">_group_cost_sums</span> <span class="ar">→</span> groups[] <span class="ar">→</span> <span class="fe">buildCategories·fcPct()</span> <span class="ar">→</span> вкладки категорий</div></div>
+    <div class="el"><div class="en"><a class="lnk" href="foodcost.html#discounts">Скидки ↗</a></div>
+      <div class="chain"><span class="be">_discount_sums</span> <span class="ar">→</span> discounts{5} <span class="ar">→</span> <span class="fe">buildDiscounts()</span> <span class="ar">→</span> 3 плашки</div></div>
+    <div class="el"><div class="en"><a class="lnk" href="foodcost.html#losses">Потери ↗</a></div>
+      <div class="chain"><span class="be">_compliment_sums</span> <span class="ar">→</span> losses <span class="ar">→</span> <span class="fe">buildLosses()</span> <span class="ar">→</span> строки потерь</div></div>
+  </div>
+
+  <!-- ДАШБОРД -->
+  <div class="pagecard">
+    <div class="ph"><h2>Дашборд</h2><span class="route">/dashboard</span>
+      <span class="st wip">ОБЗОР</span></div>
+    <div class="psub">build_dashboard / _chart / _kpi → GET /api/dashboard(+/chart,/kpi) → dashboard.mapper.ts (слои)</div>
+    <div class="el"><div class="en">KPI-карточки</div>
+      <div class="chain"><span class="be">_totals·build_dashboard_kpi</span> <span class="ar">→</span> kpis.* {value, prevValue} <span class="ar">→</span> <span class="fe">buildDashboardKpiLayer·lfl()</span> <span class="ar">→</span> «выручка + LfL %»</div></div>
+    <div class="el"><div class="en">График выручки по дням</div>
+      <div class="chain"><span class="be">_daily·build_dashboard_chart</span> <span class="ar">→</span> revenueByDay[] <span class="ar">→</span> <span class="fe">revenue-days-chart.utils</span> <span class="ar">→</span> столбцы</div></div>
+    <div class="el"><div class="en">Донат долей К/Б/В</div>
+      <div class="chain"><span class="be">_unit_sums</span> <span class="ar">→</span> units[] <span class="ar">→</span> <span class="fe">buildDashboardRevenueCategories</span> <span class="ar">→</span> дуги доната</div></div>
+    <div class="el"><div class="en">Мини-панель фудкоста</div>
+      <div class="chain"><span class="be">_unit_sums</span> <span class="ar">→</span> units[] <span class="ar">→</span> <span class="fe">buildDashboardFoodcostMini·fcPct</span> <span class="ar">→</span> % по юнитам</div></div>
+    <div class="el"><div class="en">Панель склада</div>
+      <div class="chain"><span class="be">стаб data/warehouse.json</span> <span class="ar">→</span> totals{value,byStore} <span class="ar">→</span> <span class="fe">buildStockFromWarehouse</span> <span class="ar">→</span> остатки по складам</div></div>
+  </div>
+
+  <!-- ПРОДАЖИ -->
+  <div class="pagecard">
+    <div class="ph"><h2>Продажи</h2><span class="route">/sales</span>
+      <span class="st wip">ОБЗОР</span></div>
+    <div class="psub">build_sales() → GET /api/sales → sales-aggregation.utils.ts (фронт считает rev/gp/fc/ABC)</div>
+    <div class="el"><div class="en">Таблица позиций</div>
+      <div class="chain"><span class="be">build_sales·GROUP BY name</span> <span class="ar">→</span> positions[] {qty,price,unitCost} <span class="ar">→</span> <span class="fe">positions-table-organism</span> <span class="ar">→</span> строки таблицы</div></div>
+    <div class="el"><div class="en">ABC-анализ</div>
+      <div class="chain"><span class="be">positions[]</span> <span class="ar">→</span> <span class="fe">abc-analysis.utils (80/95%)</span> <span class="ar">→</span> группы A/B/C</div></div>
+    <div class="el"><div class="en">Донат структуры</div>
+      <div class="chain"><span class="be">positions[]</span> <span class="ar">→</span> <span class="fe">sum(rev) по unit</span> <span class="ar">→</span> дуги доната («o» вне доната)</div></div>
+  </div>
+
+  <!-- СКЛАД -->
+  <div class="pagecard">
+    <div class="ph"><h2>Склад</h2><span class="route">/warehouse</span>
+      <span class="st wip">В РАЗРАБОТКЕ · СТАБ</span></div>
+    <div class="psub">v2-контракт спроектирован (schemas/warehouse.py), эндпоинт пока отдаёт стаб — миграция после согласования</div>
+    <div class="el"><div class="en">Тоталы по складам</div>
+      <div class="chain"><span class="be">снапшот · SUM(value) qty&gt;0</span> <span class="ar">→</span> totals[StoreValue] <span class="ar">→</span> <span class="fe">итоги К/Б/В</span></div></div>
+    <div class="el"><div class="en">Таблица остатков</div>
+      <div class="chain"><span class="be">stock_balances дня</span> <span class="ar">→</span> positions[] <span class="ar">→</span> <span class="fe">таблица состава</span></div></div>
+    <div class="el"><div class="en">График динамики</div>
+      <div class="chain"><span class="be">SUM по (day,store)</span> <span class="ar">→</span> dynamics[] <span class="ar">→</span> <span class="fe">линия стоимости во времени</span></div></div>
+    <div class="el"><div class="en">Минусовые остатки</div>
+      <div class="chain"><span class="be">строки qty&lt;0</span> <span class="ar">→</span> negativeStock <span class="ar">→</span> <span class="fe">предупреждение</span></div></div>
+  </div>
+
+  <!-- ЦЕЛИ -->
+  <div class="pagecard">
+    <div class="ph"><h2>Цели</h2><span class="route">/targets</span>
+      <span class="st wip">СТАБ · МОДУЛЬ TARGETS</span></div>
+    <div class="psub">форма ввода планов; цели уезжают в goal/plan существующих контрактов</div>
+    <div class="el"><div class="en">Выручка по дням</div>
+      <div class="chain"><span class="fe">сумма × профиль недели</span> <span class="ar">→</span> plan дня <span class="ar">→</span> график дашборда</div></div>
+    <div class="el"><div class="en">Фудкост юнитов / списания / комплименты / инвентаризация</div>
+      <div class="chain"><span class="fe">% от плана выручки</span> <span class="ar">→</span> goal <span class="ar">→</span> foodcost/losses</div></div>
+  </div>
+
+  <div class="foot">Сезоны · карта данных · страницы детализируются по одной</div>
+
+<script>
+  function tg(){const r=document.documentElement;const d=r.dataset.theme==='dark';
+    r.dataset.theme=d?'':'dark';document.querySelector('.ghost').textContent=d?'◐ тёмная':'◑ светлая';}
+</script>
+</body>
+</html>
